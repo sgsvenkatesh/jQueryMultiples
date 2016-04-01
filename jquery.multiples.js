@@ -46,7 +46,7 @@
             return {
                 destroy: function () {
                     $(global).off("resize.multiples");
-                    $that.find(selector:hidden).show();
+                    $that.find(selector + ":hidden").show();
                 }
             }
         }
