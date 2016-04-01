@@ -22,10 +22,14 @@
                 }
             });
 
-            function hideRemainderElements ($that, selector, multiple) {
+            function hideRemainderElements ($that, selector, multiples) {
                 var listElements = $that.find(selector);
-                var remainder = listElements.length % multiple;
-                $that.find(selector + ":hidden").show()
+                var remainder = listElements.length % multiples;
+                $that.find(selector + ":hidden").each(function () {
+                    if (listElements.length - $(this).index() > remainder) {
+                        $(this).show();
+                    }
+                });
                 while (remainder) {
                     listElements.eq(listElements.length - remainder).hide();
                     remainder--;
@@ -34,14 +38,14 @@
 
             function getActiveRule (multipleRules, global) {
                 return multipleRules.find(function (rule) {
-                    return $(global).width() < rule.width;
+                    return global.innerWidth < rule.width;
                 });
             }
 
-            hideRemainderElements($that, selector, getActiveRule(multipleRules, global).multiple);
+            hideRemainderElements($that, selector, getActiveRule(multipleRules, global).multiples);
 
             $(global).on("resize.multiples", function () {
-                hideRemainderElements($that, selector, getActiveRule(multipleRules, global).multiple);
+                hideRemainderElements($that, selector, getActiveRule(multipleRules, global).multiples);
             });
 
             return {
