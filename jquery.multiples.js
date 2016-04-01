@@ -25,6 +25,7 @@
             function hideRemainderElements ($that, selector, multiple) {
                 var listElements = $that.find(selector);
                 var remainder = listElements.length % multiple;
+                $that.find(selector + ":hidden").show()
                 while (remainder) {
                     listElements.eq(listElements.length - remainder).hide();
                     remainder--;
