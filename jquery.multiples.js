@@ -39,9 +39,16 @@
 
             hideRemainderElements($that, selector, getActiveRule(multipleRules, global).multiple);
 
-            $(global).on("resize", function () {
+            $(global).on("resize.multiples", function () {
                 hideRemainderElements($that, selector, getActiveRule(multipleRules, global).multiple);
             });
+
+            return {
+                destroy: function () {
+                    $(global).off("resize.multiples");
+                    $that.find(selector:hidden).show();
+                }
+            }
         }
     });
 }(jQuery, window));
