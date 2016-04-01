@@ -1,13 +1,26 @@
-/**
- * Created by sgsvenkatesh on 4/1/16.
- */
-
 (function ($, global) {
     $.fn.extend({
-        multiples: function (selector, multiple) {
-            if (!selector || !multiple || multiple !== parseInt(multiple, 10)) {
-                throw "Invalid argument multiple";
+        multiples: function (selector, multipleRules) {
+            if (!selector || !multipleRules || multipleRules.length === 0) {
+                throw "Invalid arguments";
             }
+
+            var $that = $(this);
+
+            multipleRules.sort(function (ruleA, ruleB) {
+                ruleA.width = parseInt(ruleA.width, 10);
+                ruleB.width = parseInt(ruleB.width, 10);
+                if (isNaN(ruleA.width) || isNaN(ruleB.width)) {
+                    throw "Invalid width";
+                }
+                if (ruleA.width < ruleB.width) {
+                    return -1;
+                } else if (ruleA.width > ruleB.width) {
+                    return 1;
+                } else {
+                    throw "Duplicate rule width";
+                }
+            });
 
             function hideRemainderElements ($that, selector, multiple) {
                 var listElements = $that.find(selector);
@@ -18,10 +31,16 @@
                 }
             }
 
-            hideRemainderElements($(this), selector, multiple);
+            function getActiveRule (multipleRules, global) {
+                return multipleRules.find(function (rule) {
+                    return $(global).width() < rule.width;
+                });
+            }
+
+            hideRemainderElements($that, selector, getActiveRule(multipleRules, global).multiple);
 
             $(global).on("resize", function () {
-                // take input for resize events
+                hideRemainderElements($that, selector, getActiveRule(multipleRules, global).multiple);
             });
         }
     });
